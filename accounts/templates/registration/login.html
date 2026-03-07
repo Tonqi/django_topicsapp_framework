@@ -1,0 +1,9 @@
+{% extends 'threads/base.html'%}
+{% block content %}
+<h1>Log into your Account</h1>
+<form action="{% url 'accounts:login'%}" method="post">
+{% csrf_token %}
+{{form}}
+<button name="submit">Log in</button>
+</form>
+{% endblock content%}

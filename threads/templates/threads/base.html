@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <!-- Setting for different device users, standart scaling, try to fit content parallel to screen width of device (e.g Phone)-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <title> FunWebapp Forum - Discussions and Games</title>
+    <body>
+        <a href="{% url 'threads:index' %}">Home</a> --
+        <a href="{% url 'threads:topics' %}">Topics</a> --
+        <a href="{% url 'threads:other' %}">Other</a> -- 
+        {% if user.is_authenticated %}
+        <p>Hello, {{user.username}}</p>
+        <form action="{% url 'accounts:logout' %}" method='post'>
+        {% csrf_token %}
+        <button name='submit'>Log out</button>
+        </form>
+        {% else %}
+        <a href="{% url 'accounts:register'%}">Register</a> --
+        <a href="{% url 'accounts:login'%}">Login</a>
+        {% endif %}
+
+    </body>
+    
+    
+</html>
+{% block content %}{% endblock content %}

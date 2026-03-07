@@ -1,0 +1,6 @@
+{% extends "threads/base.html" %}
+{% block content %}
+<h1>{{topic.topic_name}}</h1>
+<p>{{topic_message}}</p>
+<a href="{% url 'threads:threads' topic.id %}">View Threads</a>
+{% endblock content %}

@@ -1,0 +1,36 @@
+{% extends "threads/base.html" %}
+{% block content %}
+<h1>{{threads.thread_title}}</h1>
+<ul>
+    {% for c in comments %}
+    <li>
+        {{c.text}} by 
+        {% if c.owner %}
+        {{c.owner.username}}
+        {% else %}
+        &lt;deleted&gt;
+        {% endif %}
+        {{c.date_added}}
+        <ul>
+            {% for reply in c.reply_set.all %}
+            <li> 
+                {{reply.text}} by
+                {% if reply.owner %}
+                {{reply.owner.username}}
+                {% else %}
+                &lt;deleted&gt;
+                {% endif %}
+                {{reply.date_added}} 
+            </li>
+            {% empty %}
+            {% endfor %}
+        </ul>
+    </li>
+    {% empty %}
+    <li> No comments yet.</li>
+    {% endfor %}
+
+</ul>
+
+
+{% endblock content %}

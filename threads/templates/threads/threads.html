@@ -1,0 +1,19 @@
+{% extends "threads/base.html" %}
+{% block content %}
+<h1> {{topics.topic_name}} </h1>
+<ul>
+    {% for t in topic_threads %}
+    <li> <a href="{% url 'threads:in_thread' topics.id t.id %}"> {{t.thread_title}} </a> Created: {{t.date_added}} by
+        {% if t.owner %}
+        {{t.owner.username}}
+        {% else %}
+        &lt;deleted&gt; 
+        {% endif %}
+    </li>
+    {% empty %}
+    <li> No Threads created yet. </li>
+    {% endfor %}
+    
+</ul>
+
+{% endblock content %}

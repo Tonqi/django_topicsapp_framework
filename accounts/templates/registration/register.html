@@ -1,0 +1,9 @@
+{% extends 'threads/base.html'%}
+{% block content %}
+<h1>Register</h1>
+<form action="{% url 'accounts:register'%}" method="post">
+{% csrf_token %}
+{{form}}
+<button name="submit">Register</button>
+</form>
+{% endblock content%}

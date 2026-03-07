@@ -1,0 +1,8 @@
+{% extends "threads/base.html" %}
+{% block content %}
+<p>
+    Enter conversations about various topics. Topics are currently only created by the admin.
+    Only create threads that match the theme of a specific topic. If you wish to suggest
+    a specific topic to be created, fill out the form: <a href="{% url 'threads:report'%}"> Submit a Topic.</a>
+</p>
+{% endblock content %}

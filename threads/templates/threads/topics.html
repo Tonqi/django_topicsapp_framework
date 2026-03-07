@@ -1,0 +1,17 @@
+{% extends "threads/base.html" %}
+{% block content %}
+<p>Here is a list of the currently available Topics:</p>
+<ul>
+    {% for t in topics %}
+    <li>
+        <a href="{% url 'threads:topic' t.id %}">{{t.topic_name}}</a>
+    </li>
+    {% empty %}
+    <li>
+        <p> There's currently no Topic yet. </p>
+    </li>
+    {% endfor %}
+</ul>
+<p>Pick one Topic and view/create/comment on Threads!</p>
+
+{% endblock content %}
