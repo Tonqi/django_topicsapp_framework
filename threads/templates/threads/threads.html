@@ -15,5 +15,13 @@
     {% endfor %}
     
 </ul>
-
+{% if topics.closed == True %}
+<p> Creation of new threads for this topic is currently closed. But you may comment or reply on existing threads.</p>
+{% else %}
+{% if user.is_authenticated %}
+<p> <a href="{% url 'threads:new_thread' topics.id %}">Create a new Thread</a></p>
+{% else %}
+<p> Create an account to start new threads! </p>
+{% endif %}
+{% endif %}
 {% endblock content %}

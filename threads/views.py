@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Topic, Thread, Comment
+from .forms import ThreadForm, NewCommentForm, NewReplyForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -45,3 +47,60 @@ def in_thread(request, topic_id, thread_id):
     comments = thread.comment_set.order_by('-date_added')
     context = {'topics':topic, 'threads':thread, 'comments':comments}
     return render(request, "threads/in_thread.html", context)
+
+@login_required
+def new_thread(request, topic_id):
+    topic = Topic.objects.get(id=topic_id)
+    if request.method != 'POST':
+        form = ThreadForm()
+    else:
+        form = ThreadForm(data=request.POST)
+        if form.is_valid():
+            # Save the Thread but don't commit to DB yet
+            new_thread_entry = form.save(commit=False)
+            # Attach an owner first and a topic
+            new_thread_entry.topic = topic
+            new_thread_entry.owner = request.user
+            # Send it to DB
+            new_thread_entry.save()
+            return redirect('threads:threads', topic_id=topic_id)
+        
+    context = {'topic':topic, 'form':form}
+    return render(request, "threads/new_thread.html", context)
+
+@login_required
+def new_comment(request, topic_id, thread_id):
+    topic = Topic.objects.get(id=topic_id)
+    thread = Thread.objects.get(id=thread_id)
+    if request.method != 'POST':
+        form = NewCommentForm()
+    else:
+        form = NewCommentForm(data=request.POST)
+        if form.is_valid():
+            new_thread_comment = form.save(commit=False)
+            new_thread_comment.owner = request.user
+            new_thread_comment.thread = thread
+            new_thread_comment.save()
+            return redirect('threads:in_thread', thread_id=thread_id, topic_id=topic_id)
+    
+    context = {'topic':topic, 'form':form, 'thread':thread}
+    return render(request, 'threads/new_comment.html', context)
+
+@login_required
+def new_reply(request, topic_id, thread_id, comment_id):
+    topic = Topic.objects.get(id=topic_id)
+    thread = Thread.objects.get(id=thread_id)
+    comment = Comment.objects.get(id=comment_id)
+    if request.method != 'POST':
+        form = NewReplyForm()
+    else:
+        form = NewReplyForm(data=request.POST)
+        if form.is_valid():
+            new_thread_reply = form.save(commit=False)
+            new_thread_reply.owner = request.user
+            new_thread_reply.comment = comment
+            new_thread_reply.save()
+            return redirect('threads:in_thread', thread_id=thread_id, topic_id=topic_id)
+    
+    context = {'topic':topic, 'form':form, 'thread':thread, 'comment':comment}
+    return render(request, 'threads/new_reply.html', context)

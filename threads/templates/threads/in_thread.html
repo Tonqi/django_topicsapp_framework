@@ -1,14 +1,25 @@
 {% extends "threads/base.html" %}
 {% block content %}
 <h1>{{threads.thread_title}}</h1>
+<p>{{threads.thread_description}}</p>
+{% if threads.closed != True%}
+<a href="{% url 'threads:new_comment' topics.id threads.id%}"> Comment on the Thread.</a>
+{% else %}
+{% endif %}
 <ul>
     {% for c in comments %}
     <li>
         {{c.text}} by 
         {% if c.owner %}
         {{c.owner.username}}
-        {% else %}
+        {% if threads.closed != True%}
+        <a href="{% url 'threads:new_reply' topics.id threads.id c.id%}"> Reply </a>
+        {% endif %}
+        {% else %}                                                                  
         &lt;deleted&gt;
+        {% if threads.closed != True%}
+        <a href="{% url 'threads:new_reply' topics.id threads.id c.id%}"> Reply </a>
+        {% endif %}
         {% endif %}
         {{c.date_added}}
         <ul>
@@ -31,6 +42,8 @@
     {% endfor %}
 
 </ul>
-
+{% if threads.closed == True %}
+<p> Thread is closed. You can't comment or reply. </p>
+{% endif %}
 
 {% endblock content %}
