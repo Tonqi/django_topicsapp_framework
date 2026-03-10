@@ -17,7 +17,8 @@ urlpatterns = [
     # accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
     # accounts/reset/done/ [name='password_reset_complete']
     
-    path('', include('django.contrib.auth.urls')),
     path('register/', views.register, name='register'),
+    path('login/', views.login, name='login'),
+    path('', include('django.contrib.auth.urls'))
 ]
     

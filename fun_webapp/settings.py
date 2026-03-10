@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     # My Apps
     "threads",
     "accounts",
+    # Custom libs
+    'django_bootstrap5',
     # Django Default
     "django.contrib.admin",
     "django.contrib.auth",

@@ -1,8 +1,18 @@
 {% extends "threads/base.html" %}
-{% block content %}
-<p>
-    Enter conversations about various topics. Topics are currently only created by the admin.
-    Only create threads that match the theme of a specific topic. If you wish to suggest
-    a specific topic to be created, fill out the form: <a href="{% url 'threads:report'%}"> Submit a Topic.</a>
-</p>
-{% endblock content %}
+{% block page_header %}
+<div>
+    <div class="container-fluid">
+        {% if user.is_authenticated %}
+        <h1 class="display-1">Welcome, {{user.username}}!</h1>
+        <p class="lead"> Have fun on the page :)</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'threads:topics'%}">Discover Topics &raquo;</a>
+        {% else %}
+        <h1 class="display-1">Welcome to FunWebapp!</h1>
+        <p class="lead"> Have a conversation about various topics with other users and checkout our other features (Coming soon) </p>
+        <p> Make an account to access all of our features! </p>
+        <a class="btn btn-primary btn-lg" href="{% url 'accounts:register'%}">Register &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock page_header %}

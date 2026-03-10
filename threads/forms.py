@@ -7,16 +7,23 @@ class ThreadForm(forms.ModelForm):
     class Meta:
         model = Thread
         fields = ['thread_title','thread_description']
-        labels ={'thread_title':'Enter a title for your Thread', 'thread_description' : 'Enter a Description for your Thread'}
+        widgets = {
+            'thread_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title'}),
+            'thread_description': forms.Textarea(attrs={'class': 'form-control','rows': 3}),
+        }
 
 class NewCommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
-        labels = {'text':''}
+        widgets = {
+            'text': forms.Textarea(attrs={'class': 'form-control','rows': 3}),
+        }
 
 class NewReplyForm(forms.ModelForm):
     class Meta:
         model = Reply
         fields = ['text']
-        labels = {'text':''}
+        widgets = {
+            'text': forms.Textarea(attrs={'class': 'form-control','rows': 3}),
+        }

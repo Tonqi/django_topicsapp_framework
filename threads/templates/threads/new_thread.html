@@ -1,9 +1,11 @@
 {% extends "threads/base.html" %}
 {% block content %}
-<p>Create a new Thread for {{topic.topic_name}}</p>
+<p class="lead">Create a new Thread for {{topic.topic_name}}</p>
 <form action="{% url 'threads:new_thread' topic.id%}" method="post">
 {% csrf_token %}
-{{form.as_div}}
-<button name="submit">Create reply to {{}}</button>
+<div class="mb-3">
+    {{form.as_div}}
+</div>
+<button class="btn btn-primary" name="submit">Submit</button>
 </form>
 {% endblock content %}

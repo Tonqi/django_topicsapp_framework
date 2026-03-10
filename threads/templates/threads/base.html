@@ -1,20 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <head>
         <meta charset="utf-8">
         <!-- Setting for different device users, standart scaling, try to fit content parallel to screen width of device (e.g Phone)-->
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% load django_bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
     </head>
-    <title> FunWebapp Forum - Discussions and Games</title>
+    <title> FunWebapp Forum - Discussions and Games</title> 
+    <!-- Bootstrap integration, use a Navbar -->
+    <body>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'threads:index' %}">Home</a>
+                <!-- "Hamburger button if the navbar does not fit the screen, collapse upon clicking the button" -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'threads:topics' %}">Topics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'threads:other' %}">Other</a>
+                        </li>
+                    </ul>
+                    {% if user.is_authenticated %}
+                    <div class="d-flex align-items-center ms-auto gap-3">
+                        <span class="navbar-text">Logged in as, <strong>{{ user.username }}</strong></span>
+                        <!-- form action = <url to submit post request>, basically, press the button, send a post request to the URL-->
+                        <form action="{% url 'accounts:logout' %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                Log out
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                        <div class="d-flex ms-auto gap-2">
+                            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">Register</a>
+                            <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary btn-sm">Login</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+        <!-- Main is used for the biggest part of the body, make a container (group of elements) with page header(like headlines etc...)
+        and block content for the rest of the page, container automatically centers content -->
+        <main class="container">
+            <div class="pb-2 mb-2">
+                {% block page_header %}{% endblock page_header %}
+            </div>
+            <div>
+                {% block content %}{% endblock content %}
+            </div>
+        </main>
+    </body>
+    
+
+    <!-- Ignored by django, comment tag -->
+    {% comment %}
     <body>
         <a href="{% url 'threads:index' %}">Home</a> --
         <a href="{% url 'threads:topics' %}">Topics</a> --
         <a href="{% url 'threads:other' %}">Other</a>
         {% if user.is_authenticated %}
         <p>Hello, {{user.username}}</p>
+        <!-- form action = <url to submit post request>, basically, press the button, send a post request to the URL-->
         <form action="{% url 'accounts:logout' %}" method='post'>
         {% csrf_token %}
-        <button name='submit'>Log out</button>
+        <button type="submit">
+        Log out
+         </button>
         </form>
         {% else %}
         -- <a href="{% url 'accounts:register'%}">Register</a> --
@@ -22,7 +82,6 @@
         {% endif %}
 
     </body>
-    
+    {% endcomment %}
     
 </html>
-{% block content %}{% endblock content %}

@@ -4,6 +4,6 @@
 <form action="{% url 'threads:new_reply' topic.id thread.id comment.id%}" method="post">
 {% csrf_token %}
 {{form.as_div}}
-<button name="submit">Submit reply</button>
+<button class="btn btn-primary mt-3" name="submit">Submit</button>
 </form>
 {% endblock content %}
