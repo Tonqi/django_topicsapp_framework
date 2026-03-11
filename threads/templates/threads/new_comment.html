@@ -1,9 +1,0 @@
-{% extends "threads/base.html" %}
-{% block content %}
-<p>Comment on: {{thread.thread_title}}</p>
-<form action="{% url 'threads:new_comment' topic.id thread.id%}" method="post">
-{% csrf_token %}
-{{form.as_div}}
-<button class="btn btn-primary mt-3" name="submit">Submit</button>
-</form>
-{% endblock content %}

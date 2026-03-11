@@ -1,6 +1,6 @@
 {% extends "threads/base.html" %}
 {% block content %}
-<p class="lead">Create a new Thread for {{topic.topic_name}}</p>
+<p class="lead fw-bold">Create a new Thread for {{topic.topic_name}}</p>
 <form action="{% url 'threads:new_thread' topic.id%}" method="post">
 {% csrf_token %}
 <div class="mb-3">

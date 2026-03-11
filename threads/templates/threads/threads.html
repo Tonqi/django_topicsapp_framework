@@ -1,9 +1,51 @@
 {% extends "threads/base.html" %}
 {% block content %}
-<h1> {{topics.topic_name}} </h1>
+<h1 class="mb-3"> {{topics.topic_name}} Threads</h1>
+
+  <div class="card mb-3">
+
+    <!-- Card Header -->
+    <div class="card-header fw-bold fs-5">
+      Threads
+    </div>
+
+    <ul class="list-group list-group-flush">
+      {% for t in topic_threads %}
+
+        <li class="list-group-item py-3">
+
+          <!-- Thread title link -->
+          <a href="{% url 'threads:in_thread' topics.id t.id %}" 
+             class="link-underline-dark fw-bold">
+            {{ t.thread_title }}
+          </a>
+
+          <!-- Meta info -->
+          <div class="text-muted small mt-1">
+            Created: {{ t.date_added }} by
+            {% if t.owner %}
+              <span class="fw-semibold">{{ t.owner.username }}</span>
+            {% else %}
+              <span class="text-danger">&lt;deleted&gt;</span>
+            {% endif %}
+          </div>
+
+        </li>
+
+      {% empty %}
+        <li class="list-group-item text-muted fst-italic py-3">
+          No threads created yet.
+        </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+
+<!--OLD-->
+{%comment%}
 <ul>
     {% for t in topic_threads %}
-    <li> <a href="{% url 'threads:in_thread' topics.id t.id %}"> {{t.thread_title}} </a> Created: {{t.date_added}} by
+    <li> <a href="{% url 'threads:in_thread' topics.id t.id %}" class="link-underline-dark"> {{t.thread_title}} </a> Created: {{t.date_added}} by
         {% if t.owner %}
         {{t.owner.username}}
         {% else %}
@@ -15,13 +57,38 @@
     {% endfor %}
     
 </ul>
+{%endcomment%}
+
+<div class="pagination mb-3">
+    <span class="step-links">
+
+        <span class="current fw-semibold">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+        
+        {% if page_obj.has_previous %}
+        <div class="d-flex gap-3">
+          <a class="link-underline-dark" href="?page=1">&laquo; First</a>
+          <a class ="link-underline-dark" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </div>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+        <div class="d-flex gap-3">
+          <a class="link-underline-dark" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="link-underline-dark" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        </div>
+        {% endif %}
+    </span>
+</div>
+
 {% if topics.closed == True %}
-<p> Creation of new threads for this topic is currently closed. But you may comment or reply on existing threads.</p>
+<p class="lead mt-5"> Creation of new threads for this topic is currently closed. But you may comment or reply on existing threads.</p>
 {% else %}
 {% if user.is_authenticated %}
-<p> <a href="{% url 'threads:new_thread' topics.id %}">Create a new Thread</a></p>
+<a href="{% url 'threads:new_thread' topics.id %}" class="fw-bold link-underline-dark mt-5">Create a new Thread</a>
 {% else %}
-<p> Create an account to start new threads! </p>
+<p class="lead mt-5"> Create an account to start new threads! </p>
 {% endif %}
 {% endif %}
 {% endblock content %}

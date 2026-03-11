@@ -1,49 +1,133 @@
 {% extends "threads/base.html" %}
 {% block content %}
-<h1>{{threads.thread_title}}</h1>
-<p>{{threads.thread_description}}</p>
-{% if threads.closed != True%}
-<a href="{% url 'threads:new_comment' topics.id threads.id%}"> Comment on the Thread.</a>
-{% else %}
-{% endif %}
-<ul>
+<p class="lead mb-2 fw-semibold">Created by {{threads.owner}} {{threads.date_added}}</p>
+<div class="card">
+    <div class="card-header fw-bold">
+        {{threads.thread_title}}
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            {{threads.thread_description}}
+        </li>
+    </ul>
+</div>
+
+<ul class="list-group mt-5 mb-2">
     {% for c in comments %}
-    <li>
-        {{c.text}} by 
-        {% if c.owner %}
-        {{c.owner.username}}
-        {% if threads.closed != True%}
-        <a href="{% url 'threads:new_reply' topics.id threads.id c.id%}"> Reply </a>
-        {% endif %}
-        {% else %}                                                                  
-        &lt;deleted&gt;
-        {% if threads.closed != True%}
-        <a href="{% url 'threads:new_reply' topics.id threads.id c.id%}"> Reply </a>
-        {% endif %}
-        {% endif %}
-        {{c.date_added}}
-        <ul>
+    <li class="list-group-item">
+        {{c.text}} 
+        <div class="text-muted small">
+            by 
+            {% if c.owner %}
+            {{c.owner.username}}
+            {{c.date_added}}
+            {% if threads.closed != True%}
+            <!-- Collapse only the comment that you are replying to -->
+            <span><button class="btn btn-sm btn-dark" data-bs-toggle="collapse" data-bs-target="#replyForm{{c.id}}">Reply</button></span>
+            {% endif %}
+            {% else %}                                                                  
+            &lt;deleted&gt;
+            {{c.date_added}}
+            {% if threads.closed != True%}
+            <span><button class="btn btn-sm btn-dark" data-bs-toggle="collapse" data-bs-target="#replyForm{{c.id}}">Reply</button></span>
+            {% endif %}
+            {% endif %}
+        </div>
+        <ul class="list-group mt-2">
             {% for reply in c.reply_set.all %}
-            <li> 
-                {{reply.text}} by
+            <li class="list-group-item"> 
+                {{reply.text}} 
+                <div class="text-muted small">
+                by
                 {% if reply.owner %}
                 {{reply.owner.username}}
                 {% else %}
                 &lt;deleted&gt;
                 {% endif %}
                 {{reply.date_added}} 
+                </div>
             </li>
             {% empty %}
             {% endfor %}
+
+            <!-- Only collapse for a certain id -->
+            <div class="collapse mt-3" id="replyForm{{c.id}}">
+                <div class="card card-body">
+                    <form method="post" action="{% url 'threads:new_reply' topics.id threads.id c.id%}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea class="form-control" id="replyText" name="text" rows="3" placeholder="Reply..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+
         </ul>
     </li>
     {% empty %}
-    <li> No comments yet.</li>
+    <li class="list-group-item"> No comments yet.</li>
     {% endfor %}
 
 </ul>
+
+
+
 {% if threads.closed == True %}
-<p> Thread is closed. You can't comment or reply. </p>
+<p class="fw-semibold"> Thread is closed. You can't comment or reply. </p>
+{% endif %}
+{% if threads.closed != True%}
+
+<div class="pagination mb-3">
+    <span class="step-links">
+
+        <span class="current fw-semibold">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+        
+        {% if page_obj.has_previous %}
+        <div class="d-flex gap-3">
+          <a class="link-underline-dark" href="?page=1">&laquo; First</a>
+          <a class ="link-underline-dark" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </div>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+        <div class="d-flex gap-3">
+          <a class="link-underline-dark" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="link-underline-dark" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        </div>
+        {% endif %}
+    </span>
+</div>
+
+<!-- Create a button targeting id=commentForm, if button is pressed collapse and show the div with id=commentForm -->
+<div class="mb-5">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#commentForm">
+    Comment on the Thread
+    </button>
+
+
+    <!-- Collapse for comments, when pressing the button
+    defined above, collapse this <div> send a post request to url new_comment when submitting -> comment gets saved onto DB-->
+    <div class="collapse mt-3" id="commentForm">
+        <div class="card card-body">
+            <form method="post" action="{% url 'threads:new_comment' topics.id threads.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <textarea class="form-control" id="commentText" name="text" rows="3" placeholder="Write your comment..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+  document.getElementById('commentForm').addEventListener('shown.bs.collapse', function () {
+    this.scrollIntoView({ block: 'end' });
+  });
+</script>
+{% else %}
 {% endif %}
 
 {% endblock content %}

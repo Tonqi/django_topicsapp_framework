@@ -2,5 +2,5 @@
 {% block content %}
 <h1>{{topic.topic_name}}</h1>
 <p>{{topic_message}}</p>
-<a href="{% url 'threads:threads' topic.id %}">View Threads</a>
+<a class="btn btn-primary"href="{% url 'threads:threads' topic.id %}" role="button">View Threads</a>
 {% endblock content %}

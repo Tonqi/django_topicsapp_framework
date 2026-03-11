@@ -1,6 +1,25 @@
 {% extends "threads/base.html" %}
 {% block content %}
-<p>Here is a list of the currently available Topics:</p>
+<p class="lead"><strong>Here is a list of the currently available Topics:</strong></p>
+<div class="card" style="width: 18rem;">
+  <div class="card-header fw-bold">
+    Available Topics
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for t in topics %}
+    <li class="list-group-item">
+        <a href="{% url 'threads:topic' t.id %}" class="link-underline-dark fw-bold">{{t.topic_name}}</a>
+    </li>
+    {% empty %}
+    <li class="list-group-item">
+        <p> There's currently no Topic yet. </p>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!--OLD-->
+{%comment%}
 <ul>
     {% for t in topics %}
     <li>
@@ -12,6 +31,7 @@
     </li>
     {% endfor %}
 </ul>
-<p>Pick one Topic and view/create/comment on Threads!</p>
+{%endcomment%}
+<p class="text-muted">Pick one Topic and view/create/comment on Threads!</p>
 
 {% endblock content %}
